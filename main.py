@@ -6,7 +6,10 @@ import pyqtgraph as pg
 from design import perceptron as design # converted design file
 
 import graph
+import database as db
 
+
+""" Main window """
 class PerceptronApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         
@@ -14,8 +17,9 @@ class PerceptronApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.setupUi(self) # this needed for initializing of design
         
         # bind events and event holders
-        self.selectButton.clicked.connect(self.browse_folder) 
-        self.loadButton.clicked.connect(self.load_data)
+        self.selectButton.clicked.connect(self.browse_folder_action) 
+        self.loadButton.clicked.connect(self.load_data_action)
+        self.StartButton.clicked.connect(self.start_action)
 
         self.graph_widg = graph.Graph() # create instance of the graph class
         self.graph_layout = QtWidgets.QVBoxLayout(self.graphic) # creating layout inside an empty widget
@@ -23,9 +27,11 @@ class PerceptronApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         #self.graphic.setParent(None) # delete widget in case of parent reposition
 
         self.graph_layout.addWidget(self.graph_widg) # add graph widget insige layout
-            
-    def browse_folder(self):
-        """Select file from local disc"""
+
+        self.database = db.Database() # create instance of database object to work with .CSV file and data
+
+    def browse_folder_action(self):
+        """Select file from local disc by button press"""
 
         self.filenameInput.clear() # cleat the line before writing
         file_name = QtWidgets.QFileDialog.getOpenFileName(self, "Open file")[0]
@@ -33,16 +39,25 @@ class PerceptronApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         if file_name:
             self.filenameInput.setText(str(file_name)) # write a string 
     
-    def load_data(self):
-        """Open selected file"""
-        pass
+    def load_data_action(self):
+        """Open selected file and read the data by button press"""
+        
+        self.database.read_csv(self.filenameInput.text())
+        
+        print("--=== Plotting data! ===--")
+        self.plot_data()
         
     def plot_data(self):
         """Plot data on the graph widget"""
+        
+        # split input data by last row value
+        list_zero, list_one = self.database.data_separation(self.database.get_data())
 
-        self.graph_widg.plot_line()
-        self.graph_widg.plot_first_dots()
-        self.graph_widg.plot_second_dots((0,1,2,3,4,5,6),(0,1,2,3,4,5,6))
+        self.graph_widg.plot_first_from_list(list_zero) # blue dots
+        self.graph_widg.plot_second_from_list(list_one) # red dots
+        
+    def start_action(self):
+        pass
 
 
 def main():
