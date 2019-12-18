@@ -26,7 +26,7 @@ class PerceptronApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
     
     def setup_vars(self):
         """ Initial setup of the global variables """
-        
+
         self.maxNumEpoch = 1000 # maximum number of epochs that will be perform at training model
         self.maxError = 0 # maximal possible error of data evaluation
         self.passedEpochs = 0 # epoch count that passed before successfull training
