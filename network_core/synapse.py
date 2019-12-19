@@ -1,10 +1,9 @@
 
-class Neuron(object):
+class Synapse(object):
 
     def __init__(self, start_weight=0):
 
         self.weight = start_weight
-        self.calculation_res = 0
     
     def set_new_weight(self, weight):
         self.weight = weight

@@ -78,8 +78,36 @@ class PerceptronApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # split input data by last row value
         list_zero, list_one = self.database.data_separation(self.database.get_data())
 
+        ## TEST 
+        db_data = list(self.database.get_data())
+        line_list = [] # x1 raw
+        
+        for i in range(len(db_data)):
+            line_list.append(db_data[i][0:1])
+        
+        final_line =[] # x1
+        
+        for i in range(len(line_list)):
+            final_line.append(float(line_list[i][0]))
+        #print(final_line)
+        line_x2 = []
+        def expression(x1):
+
+            w0 = 21.
+            w1 = 7.6105
+            w2 = 10.7384
+            return (-1) * ((w1 * x1) / w2) - (w0 / w2)
+
+        
+
+        for i in range(len(final_line)):
+            line_x2.append(expression(x1=final_line[i]))
+        ## TEST
+
         self.graph_widg.plot_first_from_list(list_zero) # blue dots
         self.graph_widg.plot_second_from_list(list_one) # red dots
+
+        self.graph_widg.plot_line(final_line, line_x2)
         
     def start_action(self):
         pass

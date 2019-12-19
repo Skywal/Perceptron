@@ -23,7 +23,7 @@ class Graph(Qt.QWidget):
         
         layout.addWidget(self.view) # show up plot area
 
-        self.line_pen = pg.mkPen(color='m', width=2)
+        self.line_pen = pg.mkPen(color='m', width=1.5)
         self.trand_line = view.plot(pen=self.line_pen) # create instance of a line
 
         # create instance of one of dots they will be reusable
