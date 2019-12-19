@@ -31,7 +31,7 @@ class NeuralNetwork(object):
 
         # bias neuron
         summ = summ + self.synapses[-1].think_process(1)
-
+       
         return summ
 
     def adder_process(self, input_list=[0]):
@@ -47,20 +47,16 @@ class NeuralNetwork(object):
             self.activation_res = 0
     
 
-    def fit(self, input_data, output_signal):
-
-        self.fit_weights(input_data=input_data, output_signal=output_signal)
-        self.fit_bias(out_sig=output_signal)
-
     def fit_bias(self, out_sig):
-        """ Adjusting bias neuron weight"""
-
-        return self.synapses[-1].get_weight() + self.learning_rate * (out_sig - self.activation_res)
+        """ Adjusting bias weight"""
+        result = self.synapses[-1].get_weight() + (self.learning_rate * (out_sig - self.activation_res))
+        #print(f"wei={self.synapses[-1].get_weight()}   out_sig={out_sig}     act_res={self.activation_res}  result is {result} ")
+        return result
 
     def fit_weights(self, input_data, output_signal):
         """ 
-        input_data - data for single neuron 
-        output_signal - corresponding signal for input data vector  aka d (last in the local file data 'example1.csv')
+        input_data - list of data for all synapses 
+        output_signal - corresponding signal for input data vector  aka d (last column in the local file data 'example*.csv')
         """
         # last one is bias and it's calculated in separate way
         for i in range(len(self.synapses)-1):
@@ -72,7 +68,7 @@ class NeuralNetwork(object):
         bias = self.fit_bias(output_signal)
         self.synapses[-1].set_new_weight(bias)
 
-    def train_network(self, train_data, epochs=100):
+    def train_network(self, train_data, epochs=59):
         curr_ep = 1
 
         while curr_ep < epochs:
@@ -80,21 +76,21 @@ class NeuralNetwork(object):
 
             for i in range(len(train_data)):
                 data_list = list(train_data[i][:-1])
+                data_list = [float(i) for i in data_list]
+
                 output_signal = int(train_data[i][-1])
 
-                data_list = [float(i) for i in data_list]
-                
                 self.adder_process(data_list)
                 self.heviside_activation()
-
-                self.fit(data_list, output_signal)
+                
+                self.fit_weights(input_data=data_list, output_signal=output_signal)
 
                 self.error_calc(output_signal)
 
             print(f"Current error is {self.curr_error}")
             
             if self.curr_error <= self.max_error:
-                print(f"Optemal weights were found after {curr_ep} epochs.")
+                print(f"Optimal weights were found after {curr_ep} epochs.")
                 break
 
             curr_ep = curr_ep + 1
@@ -111,5 +107,16 @@ if __name__ == "__main__":
 
     neural.train_network(database.get_data(), epochs=1000)
     
+    '''
+    data = list(database.get_data())
+    data_list = []
+    output_sig = []
+    for i in range(len(data)):
+        data_list = list(data[i][:-1])
+        output_sig = int(data[i][-1])
+        data_list = [float(i) for i in data_list]
+        print(f"{i} Data list is {data_list}    and out signal is {output_sig}")
+    '''
+
     for i in neural.get_synapses():
         print(f"neuron num has weight {i.get_weight()}")

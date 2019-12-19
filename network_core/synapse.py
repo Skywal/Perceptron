@@ -11,8 +11,5 @@ class Synapse(object):
     def get_weight(self):
         return self.weight
 
-    def calculate(self, input_data):
-        self.calculation_res = think_process(input_data)
-
     def think_process(self, input_data):
         return (self.weight * input_data)
