@@ -48,6 +48,21 @@ class PerceptronApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.maxNumEpochInput.setText(str(self.maxNumEpoch))
         self.maxErrorInput.setText(str(self.maxError))
 
+        self.errorInput.setText("")
+        self.passedEpochsInput.setText("")
+
+    def read_inputs(self):
+        """ Read data from active text inputs """
+        if self.maxNumEpochInput.text():
+            self.maxNumEpoch = int(self.maxNumEpochInput.text())
+        else:
+            self.maxNumEpoch = 0
+
+        if self.maxErrorInput.text():    
+            self.maxError = float(self.maxErrorInput.text())
+        else:
+            self.maxError = 0
+
 
     def neuron(self, synapses, max_error, epochs):
         
@@ -89,22 +104,10 @@ class PerceptronApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.passedEpochs = self.net_manager.get_epochs_passed()
         self.error = self.net_manager.get_error()
         self.optimal_epochs = self.net_manager.get_opt_epochs()
-        self.optimal_weights = self.net_manager.reverse_weights()
+        self.optimal_weights = self.net_manager.swap_weights()
 
         self.text_out([0])
     
-
-    def read_inputs(self):
-        """ Read data from active text inputs """
-        if self.maxNumEpochInput.text():
-            self.maxNumEpoch = int(self.maxNumEpochInput.text())
-        else:
-            self.maxNumEpoch = 0
-
-        if self.maxErrorInput.text():    
-            self.maxError = float(self.maxErrorInput.text())
-        else:
-            self.maxError = 0
 
     def text_out(self, weights=[0]):
         """ Output text-info into all available information outputs """

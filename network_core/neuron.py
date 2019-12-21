@@ -39,7 +39,7 @@ class Neuron(object):
         return summ
 
     def adder_process(self, input_list=[0]):
-        
+        """ Summ of all synapse * input_data """
         self.adder_res = self.adder(input_list=input_list)
 
     def heviside_activation(self):
@@ -102,7 +102,7 @@ class Neuron(object):
             
         print(f"Epochs {curr_ep}")
     """
-    
+
     def error_calc(self, out_sig):
         self.curr_error = self.curr_error + abs(out_sig - self.activation_res)
 
