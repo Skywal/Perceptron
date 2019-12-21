@@ -7,6 +7,7 @@ from design import perceptron as design # converted design file
 
 import graph
 import database as db
+import neural_manager as n_manager
 
 
 """ Main window """
@@ -33,7 +34,50 @@ class PerceptronApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.error = 0 # actual error of data evaluation
 
         self.database = db.Database() # create instance of database object to work with .CSV file and data
+
+
+    def neuron(self, synapses, max_error, epochs):
+        
+        self.net_manager = n_manager.NetManager(database=self.database.get_data(), synapses=synapses, max_error=max_error)
+        
+        self.net_manager.train_network(epochs=epochs)
+
+    def calculate_line(self):
+        ## TEST 
+        db_data = list(self.database.get_data())
+        line_list = [] # x1 raw
+        
+        for i in range(len(db_data)):
+            line_list.append(db_data[i][0:1])
+        
+        final_line =[] # x1
+        
+        for i in range(len(line_list)):
+            final_line.append(float(line_list[i][0]))
+        
+        line_x2 = (self.net_manager.predict_2d(final_line))
+        
+        return final_line, line_x2
     
+    def plot_line(self, x1_arr, x2_arr):
+        self.graph_widg.plot_line(x1_arr, x2_arr)
+
+    def neural_sequence(self):
+        epochs = int(self.maxNumEpochInput.text())
+        max_error = float(self.maxErrorInput.text())
+
+        synapses = len(self.database.get_data()[0][:-1]) # how many input data columns are in the list
+
+        self.neuron(epochs=epochs, max_error=max_error, synapses=synapses)
+        
+        if synapses <= 2:
+            x1_arr, x2_arr =self.calculate_line() 
+            self.plot_line(x1_arr, x2_arr)
+    
+    def text_out(self):
+
+        self.listWidget.addItem()
+
     def setup_graph(self):
         """ Initial setup of the graphical output """
 
@@ -78,39 +122,12 @@ class PerceptronApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # split input data by last row value
         list_zero, list_one = self.database.data_separation(self.database.get_data())
 
-        ## TEST 
-        db_data = list(self.database.get_data())
-        line_list = [] # x1 raw
-        
-        for i in range(len(db_data)):
-            line_list.append(db_data[i][0:1])
-        
-        final_line =[] # x1
-        
-        for i in range(len(line_list)):
-            final_line.append(float(line_list[i][0]))
-        #print(final_line)
-        line_x2 = []
-        def expression(x1):
-
-            w0 = 21.
-            w1 = 7.6105
-            w2 = 10.7384
-            return (-1) * ((w1 * x1) / w2) - (w0 / w2)
-
-        
-
-        for i in range(len(final_line)):
-            line_x2.append(expression(x1=final_line[i]))
-        ## TEST
-
         self.graph_widg.plot_first_from_list(list_zero) # blue dots
         self.graph_widg.plot_second_from_list(list_one) # red dots
 
-        self.graph_widg.plot_line(final_line, line_x2)
         
     def start_action(self):
-        pass
+        self.neural_sequence()
 
 
 def main():
