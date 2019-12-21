@@ -53,6 +53,12 @@ class Database(object):
     def get_data(self):
         """" Get raw data from the file in form of list"""
         return self.file_data
+    
+    def get_items_count(self):
+        return len(self.file_data)
+    
+    def get_items_dimensions(self):
+        return len(self.file_data[0][:-1])
 
 
 if __name__ == "__main__":
